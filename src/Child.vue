@@ -14,6 +14,10 @@
 
 </script>
 
+<script lang="ts">
+export default {}
+</script>
+
 <style scoped>
   .child {
     background-color: skyblue;
