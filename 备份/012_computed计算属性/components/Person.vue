@@ -1,22 +1,22 @@
 <template>
   <div class="person">
-    姓：<input type="text" v-model="firstName"> <br>
-    名：<input type="text" v-model="lastName"> <br>
-    <button @click="changeFullName">将全名改为li-si</button> <br>
-    全名：<span>{{fullName}}</span> <br>
-    全名：<span>{{fullName}}</span> <br>
-    全名：<span>{{fullName}}</span> <br>
-    全名：<span>{{fullName}}</span> <br>
-    全名：<span>{{fullName}}</span> <br>
-    全名：<span>{{fullName}}</span> <br>
+    姓：<input type="text" v-model="firstName" /> <br />
+    名：<input type="text" v-model="lastName" /> <br />
+    <button @click="changeFullName">将全名改为li-si</button> <br />
+    全名：<span>{{ fullName }}</span> <br />
+    全名：<span>{{ fullName }}</span> <br />
+    全名：<span>{{ fullName }}</span> <br />
+    全名：<span>{{ fullName }}</span> <br />
+    全名：<span>{{ fullName }}</span> <br />
+    全名：<span>{{ fullName }}</span> <br />
   </div>
 </template>
 
 <script lang="ts" setup name="Person">
-  import {ref,computed} from 'vue'
+  import { ref, computed } from "vue";
 
-  let firstName = ref('zhang')
-  let lastName = ref('san')
+  let firstName = ref("zhang");
+  let lastName = ref("san");
 
   // fullName是一个计算属性，且是只读的
   /* let fullName = computed(()=>{
@@ -25,21 +25,32 @@
   }) */
 
   // fullName是一个计算属性，可读可写
+  // fullName对象是ref
   let fullName = computed({
     // 当fullName被读取时，get调用
-    get(){
-      return firstName.value.slice(0,1).toUpperCase() + firstName.value.slice(1) + '-' + lastName.value
+    get() {
+      // computed有缓存，后续执行时直接读取缓存，因此控制台只打印一次
+      console.log("get");
+      return (
+        // 首字母大写拼接其余字母
+        firstName.value.slice(0, 1).toUpperCase() +
+        firstName.value.slice(1) +
+        "-" +
+        lastName.value
+      );
     },
     // 当fullName被修改时，set调用，且会收到修改的值
-    set(val){
-      const [str1,str2] = val.split('-')
-      firstName.value = str1
-      lastName.value = str2
-    }
-  })
+    set(val) {
+      // 这样会递归调用set，不要加！
+      // fullName.value = val;
+      const [str1, str2] = val.split("-");
+      firstName.value = str1;
+      lastName.value = str2;
+    },
+  });
 
-  function changeFullName(){
-    fullName.value = 'li-si'
+  function changeFullName() {
+    fullName.value = "li-si";
   }
 </script>
 
