@@ -10,21 +10,21 @@
 </template>
 
 <script lang="ts" setup name="Person">
-  import {ref,watch} from 'vue'
+  import { ref, watch } from "vue";
   // 数据
   let person = ref({
-    name:'张三',
-    age:18
-  })
+    name: "张三",
+    age: 18,
+  });
   // 方法
-  function changeName(){
-    person.value.name += '~'
+  function changeName() {
+    person.value.name += "~";
   }
-  function changeAge(){
-    person.value.age += 1
+  function changeAge() {
+    person.value.age += 1;
   }
-  function changePerson(){
-    person.value = {name:'李四',age:90}
+  function changePerson() {
+    person.value = { name: "李四", age: 90 };
   }
   /* 
     监视，情况一：监视【ref】定义的【对象类型】数据，监视的是对象的地址值，若想监视对象内部属性的变化，需要手动开启深度监视
@@ -32,10 +32,23 @@
     watch的第二个参数是：监视的回调
     watch的第三个参数是：配置对象（deep、immediate等等.....） 
   */
-  watch(person,(newValue,oldValue)=>{
-    console.log('person变化了',newValue,oldValue)
-  },{deep:true})
-  
+  /* 
+    ref 包装对象（需要 deep 才能侦测内部变更）
+    reactive 对象（直接传入可侦测其内部响应式属性）
+  */
+  /*
+    监视对象的属性变化后，newValue和oldValue一样，因为对象没变
+    监视对象直接变更时，newValue和oldValue不一样
+  */
+  watch(
+    person,
+    (newValue, oldValue) => {
+      console.log("person变化了", newValue, oldValue);
+    },
+    // deep: true 深度监视
+    // immediate: true 启动时立即监视一次得到变更前后的值
+    { deep: true, immediate: true },
+  );
 </script>
 
 <style scoped>
