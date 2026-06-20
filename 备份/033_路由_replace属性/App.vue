@@ -1,11 +1,17 @@
 <template>
   <div class="app">
-    <Header/>
+    <Header />
     <!-- 导航区 -->
     <div class="navigate">
+      <!-- push模式（默认）：浏览器打开新页面后，旧页面会push进入栈，回退时回回退到旧页面 -->
+      <!-- replace模式：被这个标记的旧页面跳转后不会保存 -->
       <RouterLink replace to="/home" active-class="active">首页</RouterLink>
-      <RouterLink replace :to="{name:'xinwen'}" active-class="active">新闻</RouterLink>
-      <RouterLink replace :to="{path:'/about'}" active-class="active">关于</RouterLink>
+      <RouterLink replace :to="{ name: 'xinwen' }" active-class="active"
+        >新闻</RouterLink
+      >
+      <RouterLink replace :to="{ path: '/about' }" active-class="active"
+        >关于</RouterLink
+      >
     </div>
     <!-- 展示区 -->
     <div class="main-content">
@@ -15,13 +21,12 @@
 </template>
 
 <script lang="ts" setup name="App">
-  import {RouterView,RouterLink} from 'vue-router'
-  import Header from './components/Header.vue'
-
+  import { RouterView, RouterLink } from "vue-router";
+  import Header from "./components/Header.vue";
 </script>
 
 <style>
-    /* App */
+  /* App */
   .navigate {
     display: flex;
     justify-content: space-around;
@@ -41,7 +46,7 @@
     letter-spacing: 5px;
   }
   .navigate a.active {
-    background-color: #64967E;
+    background-color: #64967e;
     color: #ffc268;
     font-weight: 900;
     text-shadow: 0 0 1px black;
