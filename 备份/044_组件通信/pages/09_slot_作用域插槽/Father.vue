@@ -3,11 +3,14 @@
     <h3>父组件</h3>
     <div class="content">
       <Game>
+        <!-- v-slot="params"，其中params封装了子插槽中提供的所有属性 -->
         <template v-slot="params">
           <ul>
             <li v-for="y in params.youxi" :key="y.id">
               {{ y.name }}
             </li>
+            <li>{{ params.x }}</li>
+            <li>{{ params.y }}</li>
           </ul>
         </template>
       </Game>
@@ -23,17 +26,16 @@
       </Game>
 
       <Game>
-        <template #default="{youxi}">
+        <template #default="{ youxi }">
           <h3 v-for="g in youxi" :key="g.id">{{ g.name }}</h3>
         </template>
       </Game>
-
     </div>
   </div>
 </template>
 
 <script setup lang="ts" name="Father">
-  import Game from './Game.vue'
+  import Game from "./Game.vue";
 </script>
 
 <style scoped>
@@ -46,7 +48,8 @@
     display: flex;
     justify-content: space-evenly;
   }
-  img,video {
+  img,
+  video {
     width: 100%;
   }
 </style>
