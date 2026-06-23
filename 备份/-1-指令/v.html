@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue v- 指令学习示例</title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; padding: 20px; }
+      section { border:1px solid #ddd; padding:12px; margin:12px 0; border-radius:6px; }
+      h2 { margin-top:0; }
+      pre { background:#f7f7f7; padding:10px; overflow:auto }
+      [v-cloak] { display:none; }
+      .box { padding:8px; border-radius:4px }
+      .true { background: #e6ffed } .false { background:#ffe6e6 }
+    </style>
+  </head>
+  <body>
+    <h1>Vue 常用 <code>v-</code> 指令汇总与示例（Vue 3）</h1>
+    <p>页面使用 <a href="https://unpkg.com/vue@3" target="_blank">Vue 3 CDN</a>，直接打开此文件可交互练习。</p>
+
+    <!-- v-cloak 示例：在 Vue 挂载前隐藏内容 -->
+    <section>
+      <h2>v-cloak</h2>
+      <p>避免闪烁，Vue 未挂载前隐藏元素，挂载后自动移除属性。</p>
+      <div id="app" v-cloak>
+        <!-- 页面加载前不会显示下面绑定的内容 -->
+        <div>页面已渲染：{{ readyMessage }}</div>
+      </div>
+      <pre>示例：&lt;div id="app" v-cloak&gt; ... &lt;/div&gt;</pre>
+    </section>
+
+    <div id="app-main">
+      <!-- v-text / v-html -->
+      <section>
+        <h2>v-text 与 v-html</h2>
+        <p>v-text 等价于把文本设置为元素的 textContent；v-html 会把字符串作为 HTML 插入（需注意 XSS）。</p>
+        <div>
+          <p v-text="textExample"></p>
+          <p v-html="htmlExample"></p>
+        </div>
+        <pre>// v-text: 安全地显示文本
+// v-html: 将字符串解析为 HTML（慎用）
+&lt;p v-text="textExample"&gt;&lt;/p&gt;
+&lt;p v-html="htmlExample"&gt;&lt;/p&gt;
+        </pre>
+      </section>
+
+      <!-- v-bind / : -->
+      <section>
+        <h2>v-bind（缩写为 :）</h2>
+        <p>用于绑定属性；支持动态参数 <code>v-bind:[attrName]</code>。</p>
+        <div>
+          <img :src="imgSrc" alt="示例图片" width="120" />
+          <input :disabled="isDisabled" placeholder="绑定 disabled 属性" />
+        </div>
+        <p>
+          动态属性：
+          <input v-model="dynamicAttrName" placeholder="输入属性名, 如 title 或 id" />
+          <input v-model="dynamicAttrValue" placeholder="属性值" />
+          <button @click="applyDynamicAttr">应用</button>
+        </p>
+        <div ref="dynamicBox" class="box">我是动态属性目标元素</div>
+        <pre>// 例：&lt;img :src="imgSrc"&gt;  或  &lt;div v-bind:[dynamicAttrName]="dynamicAttrValue"&gt;</pre>
+      </section>
+
+      <!-- v-on / @ -->
+      <section>
+        <h2>v-on（缩写为 @）及修饰符</h2>
+        <p>监听事件并处理；常见修饰符：<code>.stop</code>、<code>.prevent</code>、<code>.once</code>、<code>.self</code>、<code>.passive</code></p>
+        <button @click="count++">基本点击：{{ count }}</button>
+        <button @click.stop="noBubble">点击并阻止冒泡（.stop）</button>
+        <form @submit.prevent="onSubmit">提交表单（.prevent）</form>
+        <button @click.once="doOnce">只触发一次（.once）</button>
+        <pre>// 例如：&lt;button @click.stop="fn"&gt; 阻止冒泡
+// &lt;form @submit.prevent="onSubmit"&gt; 阻止默认提交
+// &lt;button @click.once="handler"&gt; 只触发一次</pre>
+      </section>
+
+      <!-- v-model -->
+      <section>
+        <h2>v-model 与修饰符（.lazy .trim .number）</h2>
+        <p>双向绑定输入。修饰符：<code>.lazy</code>（change 触发）、<code>.trim</code>（去除首尾空格）、<code>.number</code>（转成数字）。</p>
+        <div>
+          <input v-model="name" placeholder="v-model 文本" />
+          <p>绑定结果：{{ name }}</p>
+        </div>
+        <div>
+          <input v-model.lazy="lazyInput" placeholder="使用 .lazy" />
+          <input v-model.trim="trimInput" placeholder="使用 .trim" />
+          <input v-model.number="numInput" placeholder="使用 .number" />
+          <p>lazy: {{ lazyInput }} | trim: '{{ trimInput }}' | number: {{ numInput }} (type: {{ typeof numInput }})</p>
+        </div>
+        <pre>// 示例： &lt;input v-model.trim="text" /&gt; &lt;input v-model.number="n" /&gt;</pre>
+      </section>
+
+      <!-- v-if / v-else-if / v-else 与 v-show -->
+      <section>
+        <h2>v-if / v-else-if / v-else 与 v-show</h2>
+        <p>v-if 控制是否渲染节点（销毁/重建）；v-show 仅切换 CSS 的 display。</p>
+        <div>
+          <button @click="toggleIf = !toggleIf">切换 v-if（当前：{{ toggleIf }}）</button>
+          <p v-if="toggleIf">这是 v-if 渲染的内容（会销毁/重建）</p>
+          <p v-else>当 v-if 为 false 时显示</p>
+        </div>
+        <div>
+          <button @click="showBox = !showBox">切换 v-show（当前：{{ showBox }}）</button>
+          <p v-show="showBox">这是 v-show 控制显示/隐藏的内容（始终在 DOM 中）</p>
+        </div>
+      </section>
+
+      <!-- v-for -->
+      <section>
+        <h2>v-for 列表渲染（注意必须添加 key）</h2>
+        <p>v-for 支持数组、对象、基于 index 的遍历，建议为每一项提供唯一 key。</p>
+        <div>
+          <button @click="addItem">添加一项</button>
+          <ul>
+            <li v-for="(item, idx) in items" :key="item.id">{{ idx }} - {{ item.text }}</li>
+          </ul>
+        </div>
+        <pre>// 示例： &lt;li v-for="(item, idx) in items" :key="item.id"&gt; ... &lt;/li&gt;</pre>
+      </section>
+
+      <!-- v-pre 和 v-once -->
+      <section>
+        <h2>v-pre 与 v-once</h2>
+        <p><code>v-pre</code> 跳过该元素及子元素的编译（显示原始模板）；<code>v-once</code> 只渲染一次，之后不会更新。</p>
+        <div>
+          <p v-pre>{{ 2 + 2 }}（显示原始模板，不会计算）</p>
+          <p v-once>{{ onceText }}</p>
+          <button @click="onceText = '已修改'">修改 onceText（不会生效）</button>
+        </div>
+      </section>
+
+      <!-- 动态组件：v-is -->
+      <section>
+        <h2>动态组件（v-is / :is）</h2>
+        <p>通过 <code>:is</code> 动态切换组件或标签。</p>
+        <div>
+          <select v-model="currentComp">
+            <option value="comp-a">组件 A</option>
+            <option value="comp-b">组件 B</option>
+            <option value="div">普通 div</option>
+          </select>
+          <component :is="currentComp"></component>
+        </div>
+      </section>
+
+      <!-- 插槽示例：v-slot / # -->
+      <section>
+        <h2>插槽（v-slot / #）</h2>
+        <p>父组件向子组件传递内容，使用具名插槽或默认插槽。</p>
+        <demo-slot>
+          <template #header>
+            <h3>这是来自父组件的 header 插槽</h3>
+          </template>
+          <template #default>
+            <p>这是默认插槽内容</p>
+          </template>
+        </demo-slot>
+      </section>
+
+      <!-- v-bind:class 与 v-bind:style -->
+      <section>
+        <h2>v-bind:class 与 v-bind:style</h2>
+        <p>可以绑定对象、数组或计算属性来动态设置 class/style。</p>
+        <div>
+          <label><input type="checkbox" v-model="isActive" /> isActive</label>
+          <label><input type="checkbox" v-model="hasError" /> hasError</label>
+          <div :class="[{ active: isActive }, { error: hasError }]" :style="boxStyle">样式盒子</div>
+        </div>
+        <style>
+          .active { border:2px solid green }
+          .error { color: red }
+        </style>
+      </section>
+
+      <!-- 总结示例区 -->
+      <section>
+        <h2>事件修饰符与键盘修饰符示例</h2>
+        <p>键盘修饰符：<code>@keyup.enter</code>、<code>@keydown.ctrl.enter</code> 等。</p>
+        <input @keyup.enter="onEnter" placeholder="按 Enter 触发 @keyup.enter" />
+      </section>
+
+      <footer style="margin-top:18px; font-size:0.9em; color:#666">文件：备份/-1-指令/v.html — 示例包含常用的 v- 指令、修饰符与注意事项。</footer>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+      // 第一个简单的 v-cloak 示例应用
+      const app1 = Vue.createApp({
+        data() { return { readyMessage: 'Vue 已挂载 ✅' } }
+      })
+      app1.mount('#app')
+
+      // 主应用，包含多个指令示例
+      const app = Vue.createApp({
+        data() {
+          return {
+            // v-text / v-html 示例
+            textExample: '这是 v-text 内容',
+            htmlExample: '<strong style="color:green">这是 v-html 内容（含 HTML）</strong>',
+
+            // v-bind 示例
+            imgSrc: 'https://via.placeholder.com/120',
+            isDisabled: false,
+            dynamicAttrName: 'title',
+            dynamicAttrValue: '动态 title',
+
+            // v-on 示例
+            count: 0,
+
+            // v-model 示例
+            name: '',
+            lazyInput: '',
+            trimInput: '',
+            numInput: 0,
+
+            // v-if / v-show
+            toggleIf: true,
+            showBox: true,
+
+            // v-for
+            items: [ { id: 1, text: '第一项' }, { id: 2, text: '第二项' } ],
+
+            // v-once
+            onceText: '首次渲染文本',
+
+            // 动态组件
+            currentComp: 'comp-a',
+
+            // class/style
+            isActive: false,
+            hasError: false,
+          }
+        },
+        computed: {
+          boxStyle() {
+            return { padding: '8px', borderRadius: '4px', background: this.isActive ? '#f0fff0' : '#fff' }
+          }
+        },
+        methods: {
+          applyDynamicAttr() {
+            // 使用动态参数给元素设置属性
+            this.$refs.dynamicBox.setAttribute(this.dynamicAttrName, this.dynamicAttrValue)
+          },
+          noBubble(e) {
+            alert('已阻止冒泡')
+          },
+          onSubmit() {
+            alert('表单提交已被 prevent 拦截，改为这里处理')
+          },
+          doOnce() {
+            alert('只触发一次')
+          },
+          addItem() {
+            this.items.push({ id: Date.now(), text: '新增项 ' + (this.items.length + 1) })
+          },
+          onEnter() {
+            alert('你按了 Enter')
+          }
+        }
+      })
+
+      // 注册动态组件 comp-a / comp-b
+      app.component('comp-a', { template: '<div style="padding:6px;border:1px dashed #3b82f6">我是组件 A</div>' })
+      app.component('comp-b', { template: '<div style="padding:6px;border:1px dashed #f97316">我是组件 B</div>' })
+
+      // 注册带插槽的子组件 demo-slot
+      app.component('demo-slot', {
+        template: `
+          <div style="border:1px solid #ddd; padding:8px;">
+            <header style="background:#fafafa; padding:6px">插槽示例 - header:
+              <slot name="header"></slot>
+            </header>
+            <main style="padding:6px">
+              <slot>默认插槽内容（如果父组件没有提供）</slot>
+            </main>
+          </div>
+        `
+      })
+
+      app.mount('#app-main')
+    </script>
+  </body>
+</html>
