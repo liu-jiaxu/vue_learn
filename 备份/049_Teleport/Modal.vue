@@ -1,6 +1,7 @@
 <template>
   <button @click="isShow = true">展示弹窗</button>
-  <teleport to='body'>
+  <!-- teleport可以将包围的内容放到指定的位置 -->
+  <teleport to="body">
     <div class="modal" v-show="isShow">
       <h2>我是弹窗的标题</h2>
       <p>我是弹窗的内容</p>
@@ -10,8 +11,8 @@
 </template>
 
 <script setup lang="ts" name="Modal">
-  import {ref} from 'vue'
-  let isShow = ref(false)
+  import { ref } from "vue";
+  let isShow = ref(false);
 </script>
 
 <style scoped>
